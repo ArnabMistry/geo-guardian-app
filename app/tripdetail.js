@@ -139,19 +139,21 @@ function TripDetailsContent() {
   const handleSubmit = () => {
     if (validateForm()) {
       console.log('Trip details:', formData);
-      Alert.alert(
-        'Registration Complete! 🎉',
-        'Welcome to Northeast India! Your digital tourist profile has been created successfully.',
-        [
-          {
-            text: 'Start Exploring',
-            onPress: () => {
-              // Navigate to main app or dashboard
-              console.log('Navigate to main app');
-            }
-          }
-        ]
-      );
+      // Navigate to the next step or show success message
+      router.push('/blockchainid');
+      // Alert.alert(
+      //   'Registration Complete! 🎉',
+      //   'Welcome to Northeast India! Your digital tourist profile has been created successfully.',
+      //   [
+      //     {
+      //       text: 'Start Exploring',
+      //       onPress: () => {
+      //         // Navigate to main app or dashboard
+      //         console.log('Navigate to main app');
+      //       }
+      //     }
+      //   ]
+      // );
     }
   };
 
