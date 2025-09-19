@@ -92,10 +92,11 @@ export default function KYCInformation() {
   };
 
   const handleNext = () => {
-    if (validateForm()) {
-      console.log('Form data:', formData);
-      router.push("/verification");
-    }
+    // if (validateForm()) {
+    //   console.log('Form data:', formData);
+    //   router.push("/verification");
+    // }
+    router.push("/verification");
   };
 
   const selectDocumentType = (type) => {
@@ -168,7 +169,7 @@ export default function KYCInformation() {
               placeholder="Enter your full name"
               placeholderTextColor="#94A3B8"
             />
-            {errors.fullName && <Text style={styles.errorText}>{errors.fullName}</Text>}
+            {/* {errors.fullName && <Text style={styles.errorText}>{errors.fullName}</Text>} */}
           </View>
 
           {/* Document Type Dropdown */}
@@ -196,7 +197,7 @@ export default function KYCInformation() {
               placeholderTextColor="#94A3B8"
               secureTextEntry={formData.documentType === 'Aadhaar'}
             />
-            {errors.documentNumber && <Text style={styles.errorText}>{errors.documentNumber}</Text>}
+            {/* {errors.documentNumber && <Text style={styles.errorText}>{errors.documentNumber}</Text>} */}
           </View>
 
           {/* Phone Number */}
@@ -210,7 +211,7 @@ export default function KYCInformation() {
               placeholderTextColor="#94A3B8"
               keyboardType="phone-pad"
             />
-            {errors.phoneNumber && <Text style={styles.errorText}>{errors.phoneNumber}</Text>}
+            {/* {errors.phoneNumber && <Text style={styles.errorText}>{errors.phoneNumber}</Text>} */}
           </View>
 
           {/* Email Address */}
@@ -225,7 +226,7 @@ export default function KYCInformation() {
               keyboardType="email-address"
               autoCapitalize="none"
             />
-            {errors.emailAddress && <Text style={styles.errorText}>{errors.emailAddress}</Text>}
+            {/* {errors.emailAddress && <Text style={styles.errorText}>{errors.emailAddress}</Text>} */}
           </View>
 
           {/* Emergency Contact 1 */}
@@ -242,7 +243,7 @@ export default function KYCInformation() {
               placeholder="Enter contact name"
               placeholderTextColor="#94A3B8"
             />
-            {errors.emergencyContact1Name && <Text style={styles.errorText}>{errors.emergencyContact1Name}</Text>}
+            {/* {errors.emergencyContact1Name && <Text style={styles.errorText}>{errors.emergencyContact1Name}</Text>} */}
           </View>
 
           <View style={styles.inputGroup}>
@@ -255,7 +256,7 @@ export default function KYCInformation() {
               placeholderTextColor="#94A3B8"
               keyboardType="phone-pad"
             />
-            {errors.emergencyContact1Number && <Text style={styles.errorText}>{errors.emergencyContact1Number}</Text>}
+            {/* {errors.emergencyContact1Number && <Text style={styles.errorText}>{errors.emergencyContact1Number}</Text>} */}
           </View>
 
           {/* Emergency Contact 2 */}
