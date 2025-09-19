@@ -387,8 +387,8 @@ function TripDetailsContent() {
           onPress={handleSubmit}
           activeOpacity={0.8}
         >
-          <Text style={styles.submitButtonText}>Complete Registration</Text>
-          <Text style={styles.buttonArrow}>🎉</Text>
+          <Text style={styles.submitButtonText}>Generate Blockchain ID</Text>
+          {/* <Text style={styles.buttonArrow}>🎉</Text> */}
         </TouchableOpacity>
       </Animated.View>
 
