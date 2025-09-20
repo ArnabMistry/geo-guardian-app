@@ -203,7 +203,7 @@ function HomeContent() {
           <View style={styles.topRow}>
             <TouchableOpacity 
               style={styles.profileSection}
-              onPress={() => router.push('/profile-edit')}
+              onPress={() => router.push('/settings')}
               // onLongPress={() => {
               //   Alert.alert(
               //     'Profile Options',
