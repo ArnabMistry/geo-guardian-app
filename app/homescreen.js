@@ -358,7 +358,7 @@ function HomeContent() {
             {/* Emergency Alert */}
             <TouchableOpacity 
               style={[styles.actionCard, styles.emergencyCard]}
-              onPress={handlePanicPress}
+              onPress={() => router.push('/panic')}
               onLongPress={() => router.push('/emergency-contacts')}
             >
               <View style={styles.actionIcon}>
