@@ -34,11 +34,7 @@ const mockUserData = {
 };
 
 export default function DigitalID() {
-  return (
-    <SafeAreaProvider>
-      <DigitalIDContent />
-    </SafeAreaProvider>
-  );
+  return <DigitalIDContent />;
 }
 
 function DigitalIDContent() {
@@ -48,8 +44,8 @@ function DigitalIDContent() {
   const slideAnim = useRef(new Animated.Value(30)).current;
 
   useEffect(() => {
-    StatusBar.setBarStyle('light-content');
-    StatusBar.setBackgroundColor('#0A0A0A');
+    StatusBar.setBarStyle('dark-content');
+    StatusBar.setBackgroundColor('#FFFFFF');
     
     // Entrance animation
     Animated.parallel([
@@ -365,7 +361,7 @@ function DigitalIDContent() {
             <Text style={styles.statusText}>Blockchain secured</Text>
           </View>
           <View style={styles.statusItem}>
-            <View style={[styles.statusDot, { backgroundColor: '#F59E0B' }]} />
+            <View style={[styles.statusDot, { backgroundColor: '#6B7280' }]} />
             <Text style={styles.statusText}>Valid for {mockUserData.destinations.length} destinations</Text>
           </View>
         </Animated.View>
@@ -377,13 +373,15 @@ function DigitalIDContent() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0A0A0A',
+    backgroundColor: '#FFFFFF',
   },
   scrollContainer: {
     flex: 1,
+    backgroundColor: '#FFFFFF',
   },
   contentContainer: {
     paddingBottom: 40,
+    backgroundColor: '#FFFFFF',
   },
 
   // Header
@@ -394,7 +392,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#1A1A1A',
+    borderBottomColor: '#E5E7EB', // Light grey border
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 2,
   },
   backButton: {
     padding: 8,
@@ -402,11 +406,11 @@ const styles = StyleSheet.create({
   backIcon: {
     width: 20,
     height: 20,
-    backgroundColor: '#333333',
+    backgroundColor: '#9CA3AF',
     borderRadius: 10,
   },
   headerTitle: {
-    color: '#FFFFFF',
+    color: '#111827', // Near black
     fontSize: 18,
     fontWeight: '600',
   },
@@ -416,7 +420,7 @@ const styles = StyleSheet.create({
   menuIcon: {
     width: 20,
     height: 20,
-    backgroundColor: '#333333',
+    backgroundColor: '#9CA3AF',
     borderRadius: 10,
   },
 
@@ -425,6 +429,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 24,
     paddingVertical: 32,
+    backgroundColor: '#FFFFFF',
   },
   profilePhotoContainer: {
     position: 'relative',
@@ -439,11 +444,16 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: '#1A1A1A',
+    backgroundColor: '#3B82F6', // Blue
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: '#333333',
+    borderWidth: 3,
+    borderColor: '#DBEAFE', // Light blue
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 8,
   },
   profileInitials: {
     color: '#FFFFFF',
@@ -456,12 +466,17 @@ const styles = StyleSheet.create({
     right: 4,
     width: 28,
     height: 28,
-    backgroundColor: '#22C55E',
+    backgroundColor: '#10B981', // Green for verification
     borderRadius: 14,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 3,
-    borderColor: '#0A0A0A',
+    borderColor: '#FFFFFF',
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 4,
   },
   verifiedIcon: {
     width: 12,
@@ -470,39 +485,49 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
   userName: {
-    color: '#FFFFFF',
+    color: '#111827', // Near black
     fontSize: 24,
     fontWeight: '700',
     marginBottom: 20,
   },
   idContainer: {
     alignItems: 'center',
+    backgroundColor: '#F9FAFB', // Very light grey
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#E5E7EB', // Light grey border
   },
   idLabel: {
-    color: '#666666',
+    color: '#6B7280', // Medium grey
     fontSize: 14,
     marginBottom: 8,
     textTransform: 'uppercase',
     letterSpacing: 1,
+    fontWeight: '600',
   },
   idRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   idNumber: {
-    color: '#FFFFFF',
+    color: '#111827', // Near black
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: '700',
     letterSpacing: 2,
     marginRight: 12,
+    fontFamily: 'monospace',
   },
   copyButton: {
     padding: 8,
+    backgroundColor: '#F3F4F6', // Light grey
+    borderRadius: 8,
   },
   copyIcon: {
     width: 16,
     height: 16,
-    backgroundColor: '#666666',
+    backgroundColor: '#9CA3AF',
     borderRadius: 2,
   },
 
@@ -510,14 +535,20 @@ const styles = StyleSheet.create({
   qrSection: {
     paddingHorizontal: 24,
     marginBottom: 32,
+    backgroundColor: '#FFFFFF',
   },
   qrContainer: {
-    backgroundColor: '#111111',
-    borderWidth: 1,
-    borderColor: '#1A1A1A',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 2,
+    borderColor: '#E5E7EB', // Light grey border
     borderRadius: 20,
     padding: 24,
     alignItems: 'center',
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 12,
+    elevation: 8,
   },
   qrCode: {
     alignItems: 'center',
@@ -529,6 +560,13 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
+    borderWidth: 2,
+    borderColor: '#E5E7EB', // Light grey border
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    elevation: 4,
   },
   qrRow: {
     flexDirection: 'row',
@@ -540,12 +578,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   qrDotFilled: {
-    backgroundColor: '#000000',
+    backgroundColor: '#6B7280',
   },
   qrLabel: {
-    color: '#666666',
+    color: '#6B7280', // Medium grey
     fontSize: 14,
     textAlign: 'center',
+    fontWeight: '500',
   },
   qrPlaceholder: {
     alignItems: 'center',
@@ -554,32 +593,36 @@ const styles = StyleSheet.create({
   qrPlaceholderIcon: {
     width: 48,
     height: 48,
-    backgroundColor: '#333333',
+    backgroundColor: '#D1D5DB', // Light grey
     borderRadius: 24,
     marginBottom: 16,
   },
   qrPlaceholderText: {
-    color: '#666666',
+    color: '#6B7280', // Medium grey
     fontSize: 14,
+    fontWeight: '500',
   },
 
   // ID Card
   idCardSection: {
     paddingHorizontal: 24,
     marginBottom: 32,
+    backgroundColor: '#FFFFFF',
   },
   idCard: {
     backgroundColor: '#FFFFFF',
     borderRadius: 16,
     overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 8,
+    shadowRadius: 16,
+    elevation: 12,
+    borderWidth: 1,
+    borderColor: '#E5E7EB', // Light grey border
   },
   cardHeader: {
-    backgroundColor: '#1E40AF',
+    backgroundColor: '#F3F4F6',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -597,30 +640,41 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 20,
     marginRight: 12,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 4,
   },
   govTextContainer: {
     flex: 1,
   },
   govText: {
-    color: '#FFFFFF',
+    color: '#374151',
     fontSize: 14,
     fontWeight: '700',
     marginBottom: 2,
   },
   cardType: {
-    color: '#DBEAFE',
+    color: '#6B7280',
     fontSize: 12,
     fontWeight: '500',
   },
   cardFlag: {
     width: 32,
     height: 20,
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#3B82F6', // Blue for flag
     borderRadius: 2,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   cardContent: {
     flexDirection: 'row',
     padding: 20,
+    backgroundColor: '#FFFFFF',
   },
   cardLeft: {
     marginRight: 20,
@@ -628,9 +682,11 @@ const styles = StyleSheet.create({
   cardPhoto: {
     width: 80,
     height: 100,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: '#F9FAFB', // Very light grey
     borderRadius: 8,
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#E5E7EB', // Light grey border
   },
   cardPhotoImage: {
     width: '100%',
@@ -641,10 +697,10 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#E5E7EB',
+    backgroundColor: '#F3F4F6', // Light grey
   },
   cardPhotoInitials: {
-    color: '#6B7280',
+    color: '#6B7280', // Medium grey
     fontSize: 24,
     fontWeight: '700',
   },
@@ -662,7 +718,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   fieldLabel: {
-    color: '#6B7280',
+    color: '#6B7280', // Medium grey
     fontSize: 11,
     fontWeight: '600',
     textTransform: 'uppercase',
@@ -670,16 +726,17 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   fieldValue: {
-    color: '#1F2937',
+    color: '#111827', // Near black
     fontSize: 14,
     fontWeight: '600',
   },
   destinationsSection: {
     paddingHorizontal: 20,
     paddingBottom: 20,
+    backgroundColor: '#FFFFFF',
   },
   destinationsTitle: {
-    color: '#6B7280',
+    color: '#6B7280', // Medium grey
     fontSize: 12,
     fontWeight: '600',
     textTransform: 'uppercase',
@@ -692,15 +749,17 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   destinationTag: {
-    backgroundColor: '#F3F4F6',
+    backgroundColor: '#EFF6FF', // Very light blue
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#DBEAFE', // Light blue border
   },
   destinationText: {
-    color: '#374151',
+    color: '#2563EB', // Blue text
     fontSize: 12,
-    fontWeight: '500',
+    fontWeight: '600',
   },
   cardFooter: {
     flexDirection: 'row',
@@ -708,22 +767,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 16,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: '#F9FAFB', // Very light grey
     borderTopWidth: 1,
-    borderTopColor: '#E5E7EB',
+    borderTopColor: '#E5E7EB', // Light grey border
   },
   footerLeft: {
     flex: 1,
   },
   issuePlace: {
-    color: '#6B7280',
+    color: '#6B7280', // Medium grey
     fontSize: 11,
     marginBottom: 2,
   },
   blockchainText: {
-    color: '#3B82F6',
+    color: '#3B82F6', // Blue
     fontSize: 10,
-    fontWeight: '600',
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
   footerRight: {
     // Footer right styles
@@ -735,23 +796,34 @@ const styles = StyleSheet.create({
   securityDot: {
     width: 6,
     height: 6,
-    backgroundColor: '#D1D5DB',
+    backgroundColor: '#3B82F6', // Blue
     borderRadius: 3,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
 
   // Actions Section
   actionsSection: {
     paddingHorizontal: 24,
     marginBottom: 32,
+    backgroundColor: '#FFFFFF',
   },
   primaryAction: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#3B82F6', // Blue primary button
     borderRadius: 16,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 16,
     marginBottom: 16,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 8,
   },
   actionIcon: {
     marginRight: 12,
@@ -759,11 +831,11 @@ const styles = StyleSheet.create({
   shareIcon: {
     width: 20,
     height: 20,
-    backgroundColor: '#0A0A0A',
+    backgroundColor: '#FFFFFF',
     borderRadius: 10,
   },
   actionText: {
-    color: '#0A0A0A',
+    color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '700',
   },
@@ -773,30 +845,35 @@ const styles = StyleSheet.create({
   },
   secondaryAction: {
     flex: 1,
-    backgroundColor: '#111111',
-    borderWidth: 1,
-    borderColor: '#1A1A1A',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 2,
+    borderColor: '#E5E7EB', // Light grey border
     borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 16,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    elevation: 4,
   },
   downloadIcon: {
     width: 20,
     height: 20,
-    backgroundColor: '#666666',
+    backgroundColor: '#9CA3AF',
     borderRadius: 10,
     marginBottom: 8,
   },
   blockchainIcon: {
     width: 20,
     height: 20,
-    backgroundColor: '#3B82F6',
+    backgroundColor: '#3B82F6', // Blue
     borderRadius: 10,
     marginBottom: 8,
   },
   secondaryActionText: {
-    color: '#CCCCCC',
+    color: '#374151', // Dark grey
     fontSize: 12,
     fontWeight: '600',
     textAlign: 'center',
@@ -805,6 +882,17 @@ const styles = StyleSheet.create({
   // Status Section
   statusSection: {
     paddingHorizontal: 24,
+    backgroundColor: '#FFFFFF',
+    marginHorizontal: 24,
+    borderRadius: 16,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: '#E5E7EB', // Light grey border
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 4,
   },
   statusItem: {
     flexDirection: 'row',
@@ -814,12 +902,18 @@ const styles = StyleSheet.create({
   statusDot: {
     width: 8,
     height: 8,
-    backgroundColor: '#22C55E',
+    backgroundColor: '#10B981', // Green for verified status
     borderRadius: 4,
     marginRight: 12,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
   statusText: {
-    color: '#666666',
+    color: '#374151', // Dark grey
     fontSize: 14,
+    fontWeight: '500',
   },
 });

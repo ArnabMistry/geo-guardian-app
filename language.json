@@ -1,0 +1,18 @@
+{
+  "skip": "Skip",
+  "back": "Back",
+  "next": "Next",
+  "getStarted": "Get Started",
+
+  "secureDigitalId_title": "Secure Digital ID",
+  "secureDigitalId_subtitle": "Get blockchain-secured digital tourist identity",
+  "secureDigitalId_description": "Your identity is protected with advanced blockchain technology, ensuring secure and tamper-proof verification throughout your journey.",
+
+  "realTimeSafety_title": "Real-time Safety",
+  "realTimeSafety_subtitle": "AI-powered location monitoring & geo-fence alerts",
+  "realTimeSafety_description": "Stay safe with intelligent location tracking and instant alerts when you enter or leave designated safety zones.",
+
+  "emergencyResponse_title": "Emergency Response",
+  "emergencyResponse_subtitle": "Instant help with one-tap emergency system",
+  "emergencyResponse_description": "Get immediate assistance with our advanced emergency response system that connects you to help within seconds."
+}
