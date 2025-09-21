@@ -20,7 +20,7 @@ const { width, height } = Dimensions.get('window');
 
 // Mock user data
 const mockUserData = {
-  name: "Rahul Sharma",
+  name: "Arnab Mistry",
   photo: null,
   touristId: "TID2025001234",
   issuedDate: "15 Jan 2025",
