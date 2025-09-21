@@ -4,6 +4,7 @@ import {
   Animated,
   Dimensions,
   Modal,
+  PanResponder,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -16,6 +17,11 @@ import MapView, { Circle, Marker } from 'react-native-maps';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 const { width, height } = Dimensions.get('window');
+
+// Bottom sheet positions
+const BOTTOM_SHEET_MIN_HEIGHT = 200; // Collapsed state - always visible
+const BOTTOM_SHEET_MAX_HEIGHT = height * 0.7; // Expanded state
+const SNAP_THRESHOLD = 50; // Distance to snap to open/closed
 
 // Base user location
 const userBaseLocation = {
@@ -92,9 +98,81 @@ function LiveTrackingContent() {
     dangerScore: 42
   });
 
+  // Bottom sheet state
+  const [isBottomSheetExpanded, setIsBottomSheetExpanded] = useState(false);
+  const scrollViewRef = useRef(null);
+
   // Animations
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  const bottomSheetAnim = useRef(new Animated.Value(200)).current;
+  const bottomSheetAnim = useRef(new Animated.Value(BOTTOM_SHEET_MAX_HEIGHT - BOTTOM_SHEET_MIN_HEIGHT)).current;
+
+  // Pan Responder for bottom sheet
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: (evt, gestureState) => true,
+      onStartShouldSetPanResponderCapture: (evt, gestureState) => false,
+      onMoveShouldSetPanResponder: (evt, gestureState) => {
+        // Only respond to vertical gestures
+        return Math.abs(gestureState.dy) > Math.abs(gestureState.dx);
+      },
+      onMoveShouldSetPanResponderCapture: (evt, gestureState) => {
+        return Math.abs(gestureState.dy) > Math.abs(gestureState.dx);
+      },
+
+      onPanResponderGrant: (evt, gestureState) => {
+        // Reset scroll position when starting to drag the bottom sheet
+        if (scrollViewRef.current) {
+          scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: false });
+        }
+      },
+
+      onPanResponderMove: (evt, gestureState) => {
+        const { dy } = gestureState;
+        const currentValue = bottomSheetAnim._value;
+        const newValue = currentValue + dy;
+
+        // Constrain the movement within bounds
+        const minPosition = 0; // Fully expanded
+        const maxPosition = BOTTOM_SHEET_MAX_HEIGHT - BOTTOM_SHEET_MIN_HEIGHT; // Collapsed
+        
+        if (newValue >= minPosition && newValue <= maxPosition) {
+          bottomSheetAnim.setValue(newValue);
+        }
+      },
+
+      onPanResponderTerminationRequest: (evt, gestureState) => true,
+
+      onPanResponderRelease: (evt, gestureState) => {
+        const { dy, vy } = gestureState;
+        const currentValue = bottomSheetAnim._value;
+        
+        // Determine target position based on gesture
+        let targetPosition;
+        const minPosition = 0; // Fully expanded
+        const maxPosition = BOTTOM_SHEET_MAX_HEIGHT - BOTTOM_SHEET_MIN_HEIGHT; // Collapsed
+        const midPoint = (minPosition + maxPosition) / 2;
+
+        // If velocity is high enough, use velocity to determine direction
+        if (Math.abs(vy) > 0.5) {
+          targetPosition = vy > 0 ? maxPosition : minPosition;
+        } else {
+          // Otherwise, snap to nearest position
+          targetPosition = currentValue > midPoint ? maxPosition : minPosition;
+        }
+
+        // Animate to target position
+        Animated.spring(bottomSheetAnim, {
+          toValue: targetPosition,
+          useNativeDriver: true,
+          tension: 100,
+          friction: 8,
+        }).start();
+
+        // Update expanded state
+        setIsBottomSheetExpanded(targetPosition === minPosition);
+      },
+    })
+  ).current;
 
   useEffect(() => {
     StatusBar.setBarStyle('dark-content');
@@ -106,12 +184,8 @@ function LiveTrackingContent() {
       useNativeDriver: true,
     }).start();
 
-    Animated.timing(bottomSheetAnim, {
-      toValue: 0,
-      duration: 600,
-      delay: 400,
-      useNativeDriver: true,
-    }).start();
+    // Initial bottom sheet position (collapsed)
+    bottomSheetAnim.setValue(BOTTOM_SHEET_MAX_HEIGHT - BOTTOM_SHEET_MIN_HEIGHT);
   }, []);
 
   const handleLayerToggle = (layer) => {
@@ -120,6 +194,26 @@ function LiveTrackingContent() {
 
   const handleMyLocation = () => {
     console.log('Center on user location');
+  };
+
+  const expandBottomSheet = () => {
+    Animated.spring(bottomSheetAnim, {
+      toValue: 0,
+      useNativeDriver: true,
+      tension: 100,
+      friction: 8,
+    }).start();
+    setIsBottomSheetExpanded(true);
+  };
+
+  const collapseBottomSheet = () => {
+    Animated.spring(bottomSheetAnim, {
+      toValue: BOTTOM_SHEET_MAX_HEIGHT - BOTTOM_SHEET_MIN_HEIGHT,
+      useNativeDriver: true,
+      tension: 100,
+      friction: 8,
+    }).start();
+    setIsBottomSheetExpanded(false);
   };
 
   return (
@@ -187,10 +281,36 @@ function LiveTrackingContent() {
         </TouchableOpacity>
       </Animated.View>
 
-      {/* Bottom Sheet */}
-      <Animated.View style={[styles.bottomSheet, { transform: [{ translateY: bottomSheetAnim }] }]}>
-        <View style={styles.bottomSheetHandle} />
-        <ScrollView style={styles.bottomSheetContent} showsVerticalScrollIndicator={false}>
+      {/* Interactive Bottom Sheet */}
+      <Animated.View 
+        style={[
+          styles.bottomSheet, 
+          { 
+            height: BOTTOM_SHEET_MAX_HEIGHT,
+            transform: [{ translateY: bottomSheetAnim }]
+          }
+        ]}
+      >
+        {/* Handle Area - Draggable */}
+        <View style={styles.handleArea} {...panResponder.panHandlers}>
+          <View style={styles.bottomSheetHandle} />
+          <TouchableOpacity 
+            style={styles.expandButton}
+            onPress={isBottomSheetExpanded ? collapseBottomSheet : expandBottomSheet}
+          >
+            <Text style={styles.expandButtonText}>
+              {isBottomSheetExpanded ? '▼' : '▲'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Scrollable Content */}
+        <ScrollView 
+          ref={scrollViewRef}
+          style={styles.bottomSheetContent} 
+          showsVerticalScrollIndicator={false}
+          scrollEnabled={isBottomSheetExpanded}
+        >
           {/* Current Area */}
           <View style={styles.currentAreaSection}>
             <View style={styles.sectionHeader}>
@@ -273,7 +393,6 @@ function LiveTrackingContent() {
   );
 }
 
-// Styles remain same as your previous code
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#FFFFFF' },
   mapContainer: { flex: 1 },
@@ -287,12 +406,51 @@ const styles = StyleSheet.create({
   layerToggleContainer: { position: 'absolute', top: 130, right: 16 },
   layerToggleButton: { backgroundColor: '#FFFFFF', borderRadius: 12, padding: 12, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 8, elevation: 4 },
   layerIcon: { width: 24, height: 24, backgroundColor: '#6B7280', borderRadius: 4 },
-  myLocationContainer: { position: 'absolute', bottom: 240, right: 16 },
+  myLocationContainer: { position: 'absolute', bottom: 220, right: 16 },
   myLocationButton: { backgroundColor: '#3B82F6', borderRadius: 12, padding: 12, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 8, elevation: 4 },
   locationIcon: { width: 24, height: 24, backgroundColor: '#FFFFFF', borderRadius: 4 },
-  bottomSheet: { position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: '#FFFFFF', borderTopLeftRadius: 20, borderTopRightRadius: 20, minHeight: 200, maxHeight: height * 0.6, shadowColor: '#000', shadowOffset: { width: 0, height: -4 }, shadowOpacity: 0.1, shadowRadius: 12, elevation: 8 },
-  bottomSheetHandle: { alignSelf: 'center', width: 40, height: 4, backgroundColor: '#D1D5DB', borderRadius: 2, marginTop: 12, marginBottom: 16 },
-  bottomSheetContent: { flex: 1, paddingHorizontal: 20 },
+  bottomSheet: { 
+    position: 'absolute', 
+    bottom: 0, 
+    left: 0, 
+    right: 0, 
+    backgroundColor: '#FFFFFF', 
+    borderTopLeftRadius: 20, 
+    borderTopRightRadius: 20, 
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: -4 }, 
+    shadowOpacity: 0.1, 
+    shadowRadius: 12, 
+    elevation: 8 
+  },
+  handleArea: {
+    alignItems: 'center',
+    paddingTop: 12,
+    paddingBottom: 8,
+    flexDirection: 'row',
+    justifyContent: 'center'
+  },
+  bottomSheetHandle: { 
+    width: 40, 
+    height: 4, 
+    backgroundColor: '#D1D5DB', 
+    borderRadius: 2 
+  },
+  expandButton: {
+    position: 'absolute',
+    right: 20,
+    padding: 8
+  },
+  expandButtonText: {
+    fontSize: 16,
+    color: '#6B7280',
+    fontWeight: '600'
+  },
+  bottomSheetContent: { 
+    flex: 1, 
+    paddingHorizontal: 20,
+    paddingTop: 8
+  },
   currentAreaSection: { marginBottom: 24 },
   emergencySection: { marginBottom: 24 },
   alertsSection: { marginBottom: 40 },
