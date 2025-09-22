@@ -9,7 +9,16 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.geoguardian.app",
+      "config": {
+        "googleMapsApiKey": "AIzaSyDqADohHetnt-P-hBjJvY1rG3Ar0Nj-PSY"
+      },
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Geo Guardian needs location access to show your position on the map and provide safety alerts for your current area.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Geo Guardian needs location access to show your position on the map and provide safety alerts for your current area.",
+        "NSLocationAlwaysUsageDescription": "Geo Guardian needs location access to provide continuous safety monitoring and emergency alerts."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -19,7 +28,20 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.geoguardian.app",
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_BACKGROUND_LOCATION",
+        "INTERNET",
+        "ACCESS_NETWORK_STATE"
+      ],
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDqADohHetnt-P-hBjJvY1rG3Ar0Nj-PSY"
+        }
+      }
     },
     "web": {
       "output": "static",
@@ -39,7 +61,18 @@
           }
         }
       ],
-      "expo-localization"
+      "expo-localization",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow Geo Guardian to use your location to provide safety monitoring and emergency alerts.",
+          "locationAlwaysPermission": "Allow Geo Guardian to use your location to provide continuous safety monitoring and emergency alerts.",
+          "locationWhenInUsePermission": "Allow Geo Guardian to use your location to show your position on the map and provide safety alerts.",
+          "isIosBackgroundLocationEnabled": true,
+          "isAndroidBackgroundLocationEnabled": true,
+          "isAndroidForegroundServiceEnabled": true
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
