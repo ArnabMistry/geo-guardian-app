@@ -1,19 +1,20 @@
-import React, { useState, useRef, useEffect } from "react";
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TouchableOpacity, 
-  ScrollView,
-  Dimensions,
-  StatusBar,
+import { useRouter } from "expo-router";
+import { useEffect, useRef, useState } from "react";
+import {
+  Alert,
   Animated,
+  Dimensions,
   Modal,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
   TextInput,
-  Alert
+  TouchableOpacity,
+  View
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from "expo-router";
+import { DataStorage } from '../tourist-api/services/DataStorage';
 
 const { width, height } = Dimensions.get('window');
 
@@ -136,26 +137,17 @@ function TripDetailsContent() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = () => {
-    if (validateForm()) {
-      console.log('Trip details:', formData);
-      // Navigate to the next step or show success message
-      router.push('/blockchainid');
-      // Alert.alert(
-      //   'Registration Complete! 🎉',
-      //   'Welcome to Northeast India! Your digital tourist profile has been created successfully.',
-      //   [
-      //     {
-      //       text: 'Start Exploring',
-      //       onPress: () => {
-      //         // Navigate to main app or dashboard
-      //         console.log('Navigate to main app');
-      //       }
-      //     }
-      //   ]
-      // );
-    }
-  };
+  const handleSubmit = async () => {
+  if (validateForm()) {
+    console.log('Trip details:', formData);
+    await DataStorage.storeFormData('trip', formData); // Save trip details
+
+    // Navigate to blockchain registration
+    router.push('/blockchainid');
+  } else {
+    Alert.alert("Validation Error", "Please fill all required fields.");
+  }
+};
 
   const getSelectedDestinationsText = () => {
     if (formData.selectedDestinations.length === 0) {

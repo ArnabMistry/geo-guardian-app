@@ -13,10 +13,15 @@
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",
     "@react-native-async-storage/async-storage": "^2.2.0",
+    "@react-native-clipboard/clipboard": "^1.16.3",
     "@react-navigation/bottom-tabs": "^7.4.0",
     "@react-navigation/elements": "^2.6.3",
     "@react-navigation/native": "^7.1.17",
     "@react-navigation/stack": "^7.4.8",
+    "@truffle/contract": "^4.6.31",
+    "crypto": "^1.0.1",
+    "ethereumjs-tx": "^2.1.2",
+    "ethers": "^6.15.0",
     "expo": "~54.0.7",
     "expo-camera": "~17.0.8",
     "expo-constants": "~18.0.8",
@@ -26,13 +31,16 @@
     "expo-image-picker": "~17.0.8",
     "expo-linking": "~8.0.8",
     "expo-localization": "~17.0.7",
+    "expo-location": "~19.0.7",
     "expo-router": "~6.0.5",
     "expo-splash-screen": "~31.0.10",
     "expo-status-bar": "~3.0.8",
     "expo-symbols": "~1.0.7",
     "expo-system-ui": "~6.0.7",
     "expo-web-browser": "~15.0.7",
+    "express": "^5.1.0",
     "i18next": "^25.5.2",
+    "qrcode": "^1.5.4",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-i18next": "^15.7.3",
@@ -40,20 +48,37 @@
     "react-native-dotenv": "^3.4.11",
     "react-native-gesture-handler": "~2.28.0",
     "react-native-google-places-autocomplete": "^2.5.7",
+    "react-native-keychain": "^10.0.0",
     "react-native-localize": "^3.5.2",
     "react-native-maps": "^1.20.1",
+    "react-native-qrcode-scanner": "^1.5.5",
     "react-native-reanimated": "~4.1.0",
     "react-native-safe-area-context": "~5.6.0",
     "react-native-screens": "~4.16.0",
     "react-native-web": "~0.21.0",
+    "react-native-web3": "^0.1.0",
     "react-native-worklets": "0.5.1",
-    "expo-location": "~19.0.7"
+    "uuid": "^13.0.0",
+    "web3": "^4.16.0"
   },
   "devDependencies": {
+    "@react-native-community/cli": "^20.0.2",
     "@types/react": "~19.1.0",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0",
     "typescript": "~5.9.2"
   },
-  "private": true
+  "private": true,
+  "description": "<div align=\"center\">",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ArnabMistry/geo-guardian-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ArnabMistry/geo-guardian-app/issues"
+  },
+  "homepage": "https://github.com/ArnabMistry/geo-guardian-app#readme"
 }

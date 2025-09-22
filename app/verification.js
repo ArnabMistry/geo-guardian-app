@@ -1,19 +1,19 @@
-import React, { useState, useRef, useEffect } from "react";
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TouchableOpacity, 
-  Dimensions,
-  StatusBar,
-  Animated,
-  Alert,
-  Platform
-} from "react-native";
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { CameraView, useCameraPermissions } from "expo-camera";
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from "expo-router";
+import { useEffect, useRef, useState } from "react";
+import {
+  Alert,
+  Animated,
+  Dimensions,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from "react-native";
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { DataStorage } from '../tourist-api/services/DataStorage';
 
 const { width, height } = Dimensions.get('window');
 
@@ -72,38 +72,42 @@ function DocumentVerificationContent() {
     ).start();
   }, []);
 
-  const handleCapture = async () => {
-    if (cameraRef.current && !isProcessing) {
-      try {
-        setIsProcessing(true);
-        const photo = await cameraRef.current.takePictureAsync({ 
-          quality: 0.8, 
-          base64: false 
-        });
-        
-        console.log('Document captured:', photo.uri);
-        
-        // Simulate processing delay
-        setTimeout(() => {
-          setIsProcessing(false);
-          Alert.alert(
-            'Document Captured!',
-            'Your document has been successfully captured and is being processed.',
-            [
-              {
-                text: 'Continue',
-                onPress: () => router.push("/tripdetail")
-              }
-            ]
-          );
-        }, 2000);
-      } catch (error) {
-        console.error('Capture error:', error);
+const handleCapture = async () => {
+  if (cameraRef.current && !isProcessing) {
+    try {
+      setIsProcessing(true);
+
+      const photo = await cameraRef.current.takePictureAsync({
+        quality: 0.8,
+        base64: false
+      });
+
+      console.log('Document captured:', photo.uri);
+
+      // Save verification data
+      await DataStorage.storeFormData('verification', { documentUri: photo.uri });
+
+      setTimeout(() => {
         setIsProcessing(false);
-        Alert.alert('Error', 'Failed to capture document. Please try again.');
-      }
+        Alert.alert(
+          'Document Captured!',
+          'Your document has been successfully captured.',
+          [
+            {
+              text: 'Continue',
+              onPress: () => router.push("/tripdetail") // Go to Trip Details
+            }
+          ]
+        );
+      }, 1500);
+
+    } catch (error) {
+      console.error('Capture error:', error);
+      setIsProcessing(false);
+      Alert.alert('Error', 'Failed to capture document. Please try again.');
     }
-  };
+  }
+};
 
   const selectFromGallery = async () => {
     if (isProcessing) return;

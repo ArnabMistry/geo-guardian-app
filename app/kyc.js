@@ -1,18 +1,20 @@
-import React, { useState, useEffect, useRef } from "react";
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TextInput,
-  TouchableOpacity, 
-  ScrollView,
-  Dimensions,
-  StatusBar,
-  Animated,
-  SafeAreaView,
-  Modal
-} from "react-native";
 import { useRouter } from "expo-router";
+import { useEffect, useRef, useState } from "react";
+import {
+  Alert,
+  Animated,
+  Dimensions,
+  Modal,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
+} from "react-native";
+import { DataStorage } from '../tourist-api/services/DataStorage';
 
 const { width, height } = Dimensions.get('window');
 
@@ -91,13 +93,17 @@ export default function KYCInformation() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleNext = () => {
-    if (validateForm()) {
-      console.log('Form data:', formData);
-      router.push("/verification");
-    }
-    //router.push("/verification");
-  };
+const handleNext = async () => {
+  if (validateForm()) {
+    console.log('KYC Form data:', formData);
+    await DataStorage.storeFormData('kyc', formData); // Save KYC
+    
+    // Navigate to verification
+    router.push("/verification");
+  } else {
+    Alert.alert("Validation Error", "Please fill all required fields.");
+  }
+};
 
   const selectDocumentType = (type) => {
     handleInputChange('documentType', type);

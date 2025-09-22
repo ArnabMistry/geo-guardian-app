@@ -1,119 +1,37 @@
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Dimensions,
-  StatusBar,
-  TouchableOpacity,
-  Platform,
-  ScrollView,
-} from 'react-native';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-  withDelay,
-  Easing,
-} from 'react-native-reanimated';
-import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
+import { useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
+import {
+  Alert,
+  Dimensions,
+  Image,
+  Platform,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming
+} from 'react-native-reanimated';
+import { DataStorage } from '../tourist-api/services/DataStorage';
 
 const { width, height } = Dimensions.get('window');
+const API_BASE_URL = 'http://192.168.0.100:3001';
 
-// Generate unique tourist ID
-const generateTouristID = () => {
-  const prefix = 'TID';
-  const timestamp = Date.now().toString(36);
-  const random = Math.random().toString(36).substring(2, 8);
-  return `${prefix}-${timestamp}-${random}`.toUpperCase();
-};
-
-// Minimal QR Code Component
-const MinimalQRCode = ({ data, size = 160 }) => {
-  const createPattern = (input) => {
-    const hash = Array.from(input).reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    const pattern = [];
-    for (let i = 0; i < 21; i++) {
-      pattern[i] = [];
-      for (let j = 0; j < 21; j++) {
-        const seed = hash + i * 21 + j;
-        pattern[i][j] = (seed * 1103515245 + 12345) % 2 === 1;
-      }
-    }
-    
-    // Add corner patterns
-    const addCorner = (startRow, startCol) => {
-      for (let i = 0; i < 7; i++) {
-        for (let j = 0; j < 7; j++) {
-          if (i === 0 || i === 6 || j === 0 || j === 6 || (i >= 2 && i <= 4 && j >= 2 && j <= 4)) {
-            pattern[startRow + i][startCol + j] = true;
-          } else {
-            pattern[startRow + i][startCol + j] = false;
-          }
-        }
-      }
-    };
-    
-    addCorner(0, 0);
-    addCorner(0, 14);
-    addCorner(14, 0);
-    
-    return pattern;
-  };
-
-  const pattern = createPattern(data);
-  const cellSize = size / 21;
-
-  return (
-    <View style={[styles.qrContainer, { width: size, height: size }]}>
-      {pattern.map((row, i) => (
-        <View key={i} style={styles.qrRow}>
-          {row.map((cell, j) => (
-            <View
-              key={j}
-              style={[
-                styles.qrCell,
-                {
-                  width: cellSize,
-                  height: cellSize,
-                  backgroundColor: cell ? '#000' : '#fff',
-                }
-              ]}
-            />
-          ))}
-        </View>
-      ))}
-    </View>
-  );
-};
-
-// Minimal Progress Dot
-const ProgressDot = ({ active, delay = 0 }) => {
-  const scale = useSharedValue(0);
-  const opacity = useSharedValue(0);
-
-  useEffect(() => {
-    scale.value = withDelay(delay, withTiming(1, { duration: 600, easing: Easing.out(Easing.exp) }));
-    opacity.value = withDelay(delay, withTiming(1, { duration: 800 }));
-  }, [delay]);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-    opacity: opacity.value,
-    backgroundColor: active ? '#fff' : 'rgba(255, 255, 255, 0.3)',
-  }));
-
-  return <Animated.View style={[styles.progressDot, animatedStyle]} />;
-};
-
-export default function BlockchainAnimation() {
+export default function BlockchainRegistration() {
   const router = useRouter();
   const [progress, setProgress] = useState(0);
   const [stage, setStage] = useState('creating');
-  const [touristId, setTouristId] = useState('');
+  const [registrationData, setRegistrationData] = useState(null);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [error, setError] = useState(null);
 
   // Animation values
   const fadeIn = useSharedValue(0);
@@ -123,58 +41,99 @@ export default function BlockchainAnimation() {
   const buttonOpacity = useSharedValue(0);
 
   useEffect(() => {
-    // Entry animation - smooth, no bounce
+    // Entry animation
     fadeIn.value = withTiming(1, { duration: 1200, easing: Easing.out(Easing.exp) });
     slideUp.value = withTiming(0, { duration: 1000, easing: Easing.out(Easing.exp) });
 
-    // Start process
+    // Start blockchain registration process
     setTimeout(() => {
-      startProcess();
+      startBlockchainRegistration();
     }, 1500);
   }, []);
 
-  const startProcess = async () => {
-    // Progress animation
-    progressWidth.value = withTiming(1, {
-      duration: 4000,
-      easing: Easing.out(Easing.exp),
+const startBlockchainRegistration = async () => {
+  try {
+    setStage('Collecting registration data...');
+    setProgress(0);
+    progressWidth.value = 0;
+
+    const allFormData = await DataStorage.getAllFormData();
+    console.log('All form data before registration:', allFormData);
+
+    if (!allFormData.kyc || !allFormData.trip) {
+      throw new Error('Missing registration data'); // KYC or trip missing
+    }
+
+    setStage('Connecting to blockchain...');
+    setProgress(30);
+    progressWidth.value = withTiming(0.3, { duration: 500 });
+
+    const registrationData = {
+      ...allFormData.kyc,
+      ...allFormData.trip,
+      verification: allFormData.verification || null, // optional
+      registrationDate: new Date().toISOString()
+    };
+
+    setStage('Submitting registration...');
+    setProgress(60);
+    progressWidth.value = withTiming(0.6, { duration: 500 });
+
+    const response = await fetch(`${API_BASE_URL}/api/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(registrationData),
     });
 
-    // Update progress counter
-    const progressInterval = setInterval(() => {
-      setProgress(prev => {
-        const newProgress = Math.min(prev + 1, 100);
-        if (newProgress % 25 === 0) {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        }
-        return newProgress;
-      });
-    }, 40);
+    const result = await response.json();
+    console.log('Registration result:', result);
 
-    // Complete after 4 seconds
-    setTimeout(() => {
-      clearInterval(progressInterval);
+    if (result.success) {
       setProgress(100);
-      const id = generateTouristID();
-      setTouristId(id);
-      setIsCompleted(true);
-      
-      // Show QR code - smooth scale, no bounce
-      setTimeout(() => {
-        qrScale.value = withTiming(1, { duration: 800, easing: Easing.out(Easing.exp) });
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      }, 300);
+      progressWidth.value = withTiming(1, { duration: 800 });
 
-      // Show button
-      setTimeout(() => {
-        buttonOpacity.value = withTiming(1, { duration: 600 });
-      }, 800);
-    }, 4000);
-  };
+      setRegistrationData(result);
+      setIsCompleted(true);
+      setStage('Registration Complete');
+
+      qrScale.value = withTiming(1, { duration: 800, easing: Easing.out(Easing.exp) });
+      buttonOpacity.value = withTiming(1, { duration: 800, easing: Easing.out(Easing.exp) });
+
+      await DataStorage.clearFormData(); // Clear all saved forms
+    } else {
+      throw new Error(result.error || 'Registration failed');
+    }
+  } catch (err) {
+    console.error('Registration error:', err);
+    setError(err.message);
+    setStage('Registration failed');
+  }
+};
+
 
   const handleContinue = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     router.push('/homescreen');
+  };
+
+  const handleRetry = () => {
+    setError(null);
+    setProgress(0);
+    setStage('creating');
+    setIsCompleted(false);
+    progressWidth.value = 0;
+    qrScale.value = 0;
+    buttonOpacity.value = 0;
+    
+    setTimeout(() => {
+      startBlockchainRegistration();
+    }, 500);
+  };
+
+  const copyToClipboard = async (text) => {
+    // For React Native, you'd use @react-native-clipboard/clipboard
+    // For now, just show an alert
+    Alert.alert('Copied!', `${text.substring(0, 20)}... copied to clipboard`);
   };
 
   // Animated styles
@@ -198,7 +157,7 @@ export default function BlockchainAnimation() {
 
   return (
     <>
-      <StatusBar barStyle="light-content" backgroundColor="#000" />
+      <StatusBar barStyle="light-content" backgroundColor="#1E3A8A" />
       
       <View style={styles.container}>
         <ScrollView 
@@ -211,68 +170,109 @@ export default function BlockchainAnimation() {
             {/* Header */}
             <View style={styles.header}>
               <View style={styles.iconContainer}>
-                <Ionicons name="shield-checkmark-outline" size={32} color="#fff" />
+                <Ionicons 
+                  name={error ? "warning-outline" : "shield-checkmark-outline"} 
+                  size={32} 
+                  color={error ? "#EF4444" : "#059669"} 
+                />
               </View>
-              <Text style={styles.title}>Digital Identity</Text>
-              <Text style={styles.subtitle}>Blockchain secured</Text>
+              <Text style={styles.title}>Blockchain Registration</Text>
+              <Text style={styles.subtitle}>
+                {error ? "Registration Failed" : "Securing your digital identity"}
+              </Text>
             </View>
 
             {/* Progress Section */}
-            <View style={styles.progressSection}>
-              <Text style={styles.progressText}>{progress}%</Text>
-              
-              <View style={styles.progressBar}>
-                <Animated.View style={[styles.progressFill, progressStyle]} />
-              </View>
-              
-              <Text style={styles.statusText}>
-                {!isCompleted ? 'Creating your secure identity...' : 'Identity created successfully'}
-              </Text>
+            {!error && (
+              <View style={styles.progressSection}>
+                <Text style={styles.progressText}>{progress}%</Text>
+                
+                <View style={styles.progressBar}>
+                  <Animated.View style={[styles.progressFill, progressStyle]} />
+                </View>
+                
+                <Text style={styles.statusText}>{stage}</Text>
 
-              {/* Progress dots */}
-              <View style={styles.dotsContainer}>
-                <ProgressDot active={progress >= 25} delay={0} />
-                <ProgressDot active={progress >= 50} delay={200} />
-                <ProgressDot active={progress >= 75} delay={400} />
-                <ProgressDot active={progress >= 100} delay={600} />
+                {/* Blockchain Info */}
+                <View style={styles.blockchainInfo}>
+                  <Text style={styles.blockchainText}>⛓️ Polygon Network</Text>
+                  <Text style={styles.blockchainSubtext}>Gas-efficient blockchain</Text>
+                </View>
               </View>
-            </View>
+            )}
 
-            {/* QR Code Section */}
-            {isCompleted && (
+            {/* Error Section */}
+            {error && (
+              <View style={styles.errorSection}>
+                <Text style={styles.errorText}>{error}</Text>
+                <Text style={styles.errorSubtext}>
+                  Don't worry, your data is safe. Please try again.
+                </Text>
+              </View>
+            )}
+
+            {/* Success Section with QR Code */}
+            {isCompleted && registrationData && (
               <Animated.View style={[styles.qrSection, qrStyle]}>
-                <Text style={styles.qrTitle}>Your Tourist ID</Text>
+                <Text style={styles.qrTitle}>Your Digital Tourist ID</Text>
                 
                 <View style={styles.qrWrapper}>
-                  <MinimalQRCode 
-                    data={JSON.stringify({
-                      id: touristId,
-                      type: 'TOURIST_DIGITAL_ID',
-                      timestamp: Date.now(),
-                    })}
-                    size={160}
+                  <Image 
+                    source={{ uri: registrationData.qrCode }} 
+                    style={styles.qrImage}
                   />
                 </View>
                 
                 <View style={styles.idContainer}>
-                  <Text style={styles.idNumber}>{touristId}</Text>
+                  <Text style={styles.idLabel}>Tourist ID</Text>
+                  <TouchableOpacity 
+                    onPress={() => copyToClipboard(registrationData.touristId)}
+                    style={styles.idRow}
+                  >
+                    <Text style={styles.idNumber}>{registrationData.touristId}</Text>
+                    <Ionicons name="copy-outline" size={16} color="#94A3B8" />
+                  </TouchableOpacity>
+                </View>
+
+                <View style={styles.blockchainDetails}>
+                  <Text style={styles.detailsTitle}>Blockchain Details</Text>
+                  
+                  <TouchableOpacity 
+                    onPress={() => copyToClipboard(registrationData.transactionHash)}
+                    style={styles.detailRow}
+                  >
+                    <Text style={styles.detailLabel}>Transaction Hash:</Text>
+                    <Text style={styles.detailValue}>
+                      {registrationData.transactionHash?.substring(0, 10)}...
+                    </Text>
+                    <Ionicons name="copy-outline" size={14} color="#94A3B8" />
+                  </TouchableOpacity>
                 </View>
               </Animated.View>
             )}
 
-            {/* Continue Button */}
-            {isCompleted && (
-              <Animated.View style={[styles.buttonContainer, buttonStyle]}>
+            {/* Action Buttons */}
+            <Animated.View style={[styles.buttonContainer, buttonStyle]}>
+              {error ? (
+                <TouchableOpacity 
+                  style={styles.retryButton} 
+                  onPress={handleRetry}
+                  activeOpacity={0.8}
+                >
+                  <Ionicons name="refresh" size={20} color="#fff" style={styles.buttonIcon} />
+                  <Text style={styles.buttonText}>Try Again</Text>
+                </TouchableOpacity>
+              ) : isCompleted ? (
                 <TouchableOpacity 
                   style={styles.continueButton} 
                   onPress={handleContinue}
                   activeOpacity={0.8}
                 >
-                  <Text style={styles.buttonText}>Continue</Text>
-                  <Ionicons name="arrow-forward" size={20} color="#000" style={styles.buttonIcon} />
+                  <Text style={styles.buttonText}>Start Exploring</Text>
+                  <Ionicons name="arrow-forward" size={20} color="#fff" style={styles.buttonIcon} />
                 </TouchableOpacity>
-              </Animated.View>
-            )}
+              ) : null}
+            </Animated.View>
 
           </Animated.View>
         </ScrollView>
@@ -284,7 +284,7 @@ export default function BlockchainAnimation() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#1E3A8A',
   },
   scrollView: {
     flex: 1,
@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
-    marginBottom: 80,
+    marginBottom: 60,
   },
   iconContainer: {
     width: 64,
@@ -313,118 +313,207 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 24,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
   },
   title: {
-    fontSize: 28,
-    fontWeight: '300',
+    fontSize: 26,
+    fontWeight: '700',
     color: '#fff',
     marginBottom: 8,
-    letterSpacing: 1,
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.6)',
-    fontWeight: '300',
+    color: 'rgba(255, 255, 255, 0.7)',
+    fontWeight: '400',
+    textAlign: 'center',
   },
   progressSection: {
     alignItems: 'center',
-    marginBottom: 80,
+    marginBottom: 60,
     width: '100%',
   },
   progressText: {
-    fontSize: 48,
-    fontWeight: '100',
+    fontSize: 42,
+    fontWeight: '300',
     color: '#fff',
-    marginBottom: 32,
-    letterSpacing: 2,
+    marginBottom: 24,
   },
   progressBar: {
     width: '80%',
-    height: 1,
+    height: 4,
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    marginBottom: 32,
+    borderRadius: 2,
+    marginBottom: 24,
     overflow: 'hidden',
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#fff',
+    backgroundColor: '#059669',
+    borderRadius: 2,
   },
   statusText: {
-    fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.7)',
+    fontSize: 16,
+    color: 'rgba(255, 255, 255, 0.8)',
     textAlign: 'center',
-    marginBottom: 40,
-    fontWeight: '300',
+    marginBottom: 20,
+    fontWeight: '500',
   },
-  dotsContainer: {
-    flexDirection: 'row',
-    gap: 12,
+  blockchainInfo: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(5, 150, 105, 0.1)',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(5, 150, 105, 0.3)',
   },
-  progressDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+  blockchainText: {
+    fontSize: 14,
+    color: '#10B981',
+    fontWeight: '600',
+  },
+  blockchainSubtext: {
+    fontSize: 12,
+    color: 'rgba(16, 185, 129, 0.7)',
+    marginTop: 2,
+  },
+  errorSection: {
+    alignItems: 'center',
+    marginBottom: 60,
+    paddingHorizontal: 20,
+  },
+  errorText: {
+    fontSize: 16,
+    color: '#EF4444',
+    textAlign: 'center',
+    marginBottom: 10,
+    fontWeight: '500',
+  },
+  errorSubtext: {
+    fontSize: 14,
+    color: 'rgba(239, 68, 68, 0.7)',
+    textAlign: 'center',
+    lineHeight: 20,
   },
   qrSection: {
     alignItems: 'center',
-    marginBottom: 60,
+    marginBottom: 40,
   },
   qrTitle: {
-    fontSize: 18,
+    fontSize: 20,
     color: '#fff',
-    marginBottom: 32,
-    fontWeight: '300',
+    marginBottom: 24,
+    fontWeight: '600',
   },
   qrWrapper: {
-    padding: 20,
+    padding: 16,
     backgroundColor: '#fff',
-    borderRadius: 12,
+    borderRadius: 16,
     marginBottom: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
   },
-  qrContainer: {
-    backgroundColor: '#fff',
-    borderRadius: 4,
-  },
-  qrRow: {
-    flexDirection: 'row',
-  },
-  qrCell: {
-    // Styles applied inline
+  qrImage: {
+    width: 200,
+    height: 200,
+    borderRadius: 8,
   },
   idContainer: {
-    paddingHorizontal: 20,
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  idLabel: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.7)',
+    marginBottom: 8,
+  },
+  idRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
   idNumber: {
     fontSize: 16,
     color: '#fff',
-    fontWeight: '300',
+    fontWeight: '600',
+    marginRight: 12,
     letterSpacing: 1,
+  },
+  blockchainDetails: {
+    width: '100%',
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderRadius: 12,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  detailsTitle: {
+    fontSize: 16,
+    color: '#fff',
+    fontWeight: '600',
+    marginBottom: 12,
+  },
+  detailRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 8,
+  },
+  detailLabel: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.7)',
+  },
+  detailValue: {
+    fontSize: 14,
+    color: '#fff',
+    fontWeight: '500',
+    flex: 1,
+    textAlign: 'right',
+    marginRight: 8,
   },
   buttonContainer: {
     width: '100%',
     alignItems: 'center',
   },
   continueButton: {
-    backgroundColor: '#fff',
+    backgroundColor: '#059669',
     paddingHorizontal: 32,
     paddingVertical: 16,
-    borderRadius: 8,
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  retryButton: {
+    backgroundColor: '#EF4444',
+    paddingHorizontal: 32,
+    paddingVertical: 16,
+    borderRadius: 12,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
   buttonText: {
     fontSize: 16,
-    color: '#000',
-    fontWeight: '400',
-    marginRight: 8,
+    color: '#fff',
+    fontWeight: '600',
+    marginHorizontal: 8,
   },
   buttonIcon: {
-    marginLeft: 4,
+    marginHorizontal: 4,
   },
 });
