@@ -92,11 +92,11 @@ export default function KYCInformation() {
   };
 
   const handleNext = () => {
-    // if (validateForm()) {
-    //   console.log('Form data:', formData);
-    //   router.push("/verification");
-    // }
-    router.push("/verification");
+    if (validateForm()) {
+      console.log('Form data:', formData);
+      router.push("/verification");
+    }
+    //router.push("/verification");
   };
 
   const selectDocumentType = (type) => {
