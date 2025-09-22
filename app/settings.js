@@ -28,9 +28,9 @@ const APP_INFO = {
 // Mock user settings - Replace with actual user data
 const mockUserSettings = {
   profile: {
-    name: 'Rahul Kumar',
-    email: 'rahul.kumar@email.com',
-    phone: '+91 98765 43210',
+    name: 'Arnab Mistry',
+    email: 'arnabmistry@gamil.com',
+    phone: '+91 9876543210',
     avatar: null
   },
   safety: {
