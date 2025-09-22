@@ -215,23 +215,47 @@ export default function LanguageSelection() {
             }
           ]}
         >
-          <TouchableOpacity
-            style={[
-              styles.continueButton,
-              selectedLanguage && styles.continueButtonActive
-            ]}
-            onPress={handleContinue}
-            disabled={!selectedLanguage}
-            activeOpacity={0.8}
-          >
-            <Text style={[
-              styles.continueButtonText,
-              selectedLanguage && styles.continueButtonTextActive
-            ]}>
-              Continue
-            </Text>
-            <Text style={styles.continueArrow}>→</Text>
-          </TouchableOpacity>
+          <View style={{ gap: 16 }}>
+  <TouchableOpacity
+    style={[
+      styles.continueButton,
+      selectedLanguage && styles.continueButtonActive,
+    ]}
+    onPress={() => router.push("/homescreen")}
+    activeOpacity={0.8}
+  >
+    <Text
+      style={[
+        styles.continueButtonText,
+        selectedLanguage && styles.continueButtonTextActive,
+      ]}
+    >
+      Skip Onboarding
+    </Text>
+    <Text style={styles.continueArrow}>→</Text>
+  </TouchableOpacity>
+
+  <TouchableOpacity
+    style={[
+      styles.continueButton,
+      selectedLanguage && styles.continueButtonActive,
+    ]}
+    onPress={handleContinue}
+    disabled={!selectedLanguage}
+    activeOpacity={0.8}
+  >
+    <Text
+      style={[
+        styles.continueButtonText,
+        selectedLanguage && styles.continueButtonTextActive,
+      ]}
+    >
+      Continue
+    </Text>
+    <Text style={styles.continueArrow}>→</Text>
+  </TouchableOpacity>
+</View>
+
         </Animated.View>
       </ScrollView>
     </SafeAreaView>

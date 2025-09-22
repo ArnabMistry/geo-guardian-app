@@ -439,7 +439,7 @@ function HomeContent() {
         >
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Recent Activity</Text>
-            <TouchableOpacity onPress={() => router.push('/activity')}>
+            <TouchableOpacity onPress={() => router.push('/wip')}>
               <Text style={styles.seeAllText}>See all</Text>
             </TouchableOpacity>
           </View>

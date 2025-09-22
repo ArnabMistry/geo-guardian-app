@@ -225,16 +225,19 @@ function SafetyScoreContent() {
       // Handle different recommendation actions
       switch (recommendation.action) {
         case 'View Safe Routes':
-          router.push('/safe-routes');
+          router.push('/wip');
+          // router.push('/safe-routes');
           break;
         case 'Show Route':
           router.push({
-            pathname: '/live-tracking',
+            pathname: '/wip',
+            // pathname: '/live-tracking',
             params: { showAlternativeRoute: true }
           });
           break;
         case 'Enable Now':
-          router.push('/location-sharing-settings');
+          router.push('/wip');
+          // router.push('/location-sharing-settings');
           break;
         case 'Add Contacts':
           router.push('/emergency-contacts');

@@ -21,7 +21,7 @@ const { width, height } = Dimensions.get('window');
 // Mock data
 const mockPrimaryContacts = [
   { id: 1, name: 'Mom', phone: '+91-98765-43210', relation: 'Mother' },
-  { id: 2, name: 'Dad', phone: '+91-98765-43211', relation: 'Father' }
+  { id: 2, name: 'Dad', phone: '+91-9679889395', relation: 'Father' }
 ];
 
 const mockFamilyFriends = [

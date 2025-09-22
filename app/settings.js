@@ -137,7 +137,7 @@ function SettingsMenuContent() {
           onPress: () => {
             // Handle logout logic
             console.log('Logging out...');
-            // router.replace('/auth/login');
+            router.push('/language');
           }
         }
       ]
@@ -222,19 +222,23 @@ function SettingsMenuContent() {
 
   // Navigation functions
   const navigateToProfileEdit = () => {
-    router.push('/profile-edit');
+    router.push('/wip');
+    // router.push('/profile-edit');
   };
 
   const navigateToLanguageSettings = () => {
-    router.push('/language');
+    router.push('/wip');
+    //router.push('/language');
   };
 
   const navigateToNotificationSettings = () => {
-    router.push('/notification-settings');
+    router.push('/wip');
+   // router.push('/notification-settings');
   };
 
   const navigateToPrivacySettings = () => {
-    router.push('/privacy-settings');
+    router.push('/wip');
+   // router.push('/privacy-settings');
   };
 
   const renderSettingsItem = ({ title, subtitle, icon, onPress, rightComponent, showArrow = true }) => (
@@ -349,7 +353,7 @@ function SettingsMenuContent() {
         title: 'Terms & Conditions',
         subtitle: 'View app terms and conditions',
         icon: '📄',
-        onPress: () => console.log('Opening terms...')
+        onPress: () => router.push('/terms')
       })}
     </View>
   );

@@ -242,7 +242,8 @@ function GeofenceAlertsContent() {
   const viewOnMap = (alert) => {
     // Navigate to map with alert location
     router.push({
-      pathname: '/live-tracking',
+      pathname: '/wip',
+      // pathname: '/live-tracking',
       params: {
         focusLat: alert.coordinates.lat,
         focusLng: alert.coordinates.lng,
