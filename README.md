@@ -571,17 +571,34 @@ Revenue Streams:
 
 ### **Quick Setup**
 ```bash
-# Clone the repository
-git clone https://github.com/your-team/smart-tourist-safety
+# 1️⃣ Clone the repository
+git clone https://github.com/ArnabMistry/geo-guardian-app
 
-# Install dependencies
+# 2️⃣ Move into the project directory
+cd geo-guardian-app
+
+# 3️⃣ Install frontend dependencies
 npm install
 
-# Setup environment variables
-cp .env.example .env
-
-# Start development server
+# 4️⃣ Start the frontend development server
 npm run dev
+
+# 5️⃣ Open a new terminal window/tab and navigate to the backend (blockchain) folder
+cd tourist-api
+
+# 6️⃣ Install backend dependencies
+npm install
+
+# 7️⃣ Before starting the backend server, update your local network IP in:
+#     → app/blockchainid.js
+#     → tourist-api/server.js
+#    Replace the existing IP address with your local machine's IP (e.g., 192.168.xx.xx)
+#    You can find it using:
+#        ipconfig   # on Windows
+#        ifconfig   # on macOS/Linux
+
+# 8️⃣ Start the backend server
+node server.js
 ```
 
 ### **Documentation**
@@ -595,16 +612,16 @@ npm run dev
 ## 📞 Contact
 
 ### **Team Contact Information**
-- **Email**: team@smarttouristsafety.com
-- **Phone**: +91-XXXX-XXXXXX
+- **Email**: bt24cse012@iiitn.ac.in
+- **Phone**: +91-8821015545
 - **Website**: [www.smarttouristsafety.com](https://www.smarttouristsafety.com)
-- **GitHub**: [@smart-tourist-safety](https://github.com/smart-tourist-safety)
+- **GitHub**: [@geo-guardian-app](https://github.com/ArnabMistry/geo-guardian-app)
 
 ### **SIH 2025 Submission Details**
-- **Problem Statement ID**: [Your PS ID]
+- **Problem Statement ID**: [25002]
 - **Category**: Software
-- **Team ID**: [Your Team ID]
-- **Institution**: [Your College/Organization]
+- **Team ID**: [79279]
+- **Institution**: [IIIT Nagpur]
 
 ---
 
